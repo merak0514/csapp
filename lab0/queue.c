@@ -33,6 +33,7 @@ void q_free(queue_t *q)
 {
     /* How about freeing the list elements? */
     /* Free queue structure */
+    if (q == NULL) return;
     list_ele_t* h = q->head;
     list_ele_t* tmp;
     while(h->next != NULL) {
@@ -51,7 +52,9 @@ void q_free(queue_t *q)
 bool q_insert_head(queue_t *q, int v)
 {
     list_ele_t *newh;
-    /* What should you do if the q is NULL? */
+    if (q == NULL) {
+        return;
+    }
     newh = malloc(sizeof(list_ele_t));
     /* What if malloc returned NULL? */
     newh->value = v;
@@ -70,6 +73,11 @@ bool q_insert_tail(queue_t *q, int v)
 {
     /* You need to write the complete code for this function */
     /* Remember: It should operate in O(1) time */
+    list_ele_t* newh;
+    newh = malloc(sizeof(list_ele_t));
+    newh->value = v;
+    q->tail->next = newh;
+    q->tail = q->tail->next;
     return false;
 }
 
