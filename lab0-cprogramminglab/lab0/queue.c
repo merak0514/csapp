@@ -56,6 +56,7 @@ bool q_insert_head(queue_t *q, int v)
         return;
     }
     newh = malloc(sizeof(list_ele_t));
+    if (newh == NULL) return false;
     /* What if malloc returned NULL? */
     newh->value = v;
     newh->next = q->head;
@@ -75,10 +76,11 @@ bool q_insert_tail(queue_t *q, int v)
     /* Remember: It should operate in O(1) time */
     list_ele_t* newh;
     newh = malloc(sizeof(list_ele_t));
+    if (newh == NULL) return false;
     newh->value = v;
     q->tail->next = newh;
     q->tail = q->tail->next;
-    return false;
+    return true;
 }
 
 /*
@@ -91,6 +93,8 @@ bool q_insert_tail(queue_t *q, int v)
 bool q_remove_head(queue_t *q, int *vp)
 {
     /* You need to fix up this code. */
+    if (q == NULL) return false;
+    if (q->head == NULL) return false;
     q->head = q->head->next;
     return true;
 }
