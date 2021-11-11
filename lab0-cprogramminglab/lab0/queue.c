@@ -23,8 +23,11 @@
 queue_t *q_new()
 {
     queue_t *q =  malloc(sizeof(queue_t));
-    /* What if malloc returned NULL? */
-    q->head = NULL;
+    if (q != NULL){
+        q->head = NULL;
+        q->tail = NULL;
+        q->size = 0;
+    }
     return q;
 }
 
@@ -34,13 +37,16 @@ void q_free(queue_t *q)
     /* How about freeing the list elements? */
     /* Free queue structure */
     if (q == NULL) return;
-    list_ele_t* h = q->head;
-    list_ele_t* tmp;
-    while(h->next != NULL) {
-        tmp = h->next;
-        free(h);
-        h = tmp;
+    list_ele_t *h = q->head;
+    if (h != NULL) {
+        list_ele_t *tmp;
+        while (h != NULL) {
+            tmp = h->next;
+            free(h);
+            h = tmp;
+        }
     }
+//    free(q->tail);
     free(q);
 }
 
@@ -51,16 +57,13 @@ void q_free(queue_t *q)
  */
 bool q_insert_head(queue_t *q, int v)
 {
-    list_ele_t *newh;
-    if (q == NULL) {
-        return;
-    }
-    newh = malloc(sizeof(list_ele_t));
+    if(q == NULL) return false;
+    list_ele_t *newh = malloc(sizeof(list_ele_t));
     if (newh == NULL) return false;
-    /* What if malloc returned NULL? */
     newh->value = v;
     newh->next = q->head;
     q->head = newh;
+    if (q->head->next == NULL) q->tail = q->head;
     q->size ++;
     return true;
 }
@@ -75,8 +78,7 @@ bool q_insert_tail(queue_t *q, int v)
 {
     /* You need to write the complete code for this function */
     /* Remember: It should operate in O(1) time */
-    list_ele_t* newh;
-    newh = malloc(sizeof(list_ele_t));
+    list_ele_t* newh = malloc(sizeof(list_ele_t));
     if (newh == NULL) return false;
     newh->value = v;
     q->tail->next = newh;
@@ -94,10 +96,12 @@ bool q_insert_tail(queue_t *q, int v)
 */
 bool q_remove_head(queue_t *q, int *vp)
 {
-    /* You need to fix up this code. */
     if (q == NULL) return false;
     if (q->head == NULL) return false;
     list_ele_t *tmp = q->head;
+    if (vp != NULL) {
+        *vp = tmp->value;
+    }
     q->head = q->head->next;
     free(tmp);  // may cause some problem
     q->size --;
@@ -126,7 +130,7 @@ void q_reverse(queue_t *q)
 {
     list_ele_t *current = q->head;
     list_ele_t *prev = NULL;
-    list_ele_t *tmp = NULL:
+    list_ele_t *tmp = NULL;
     while(current != NULL) {
         tmp = current->next;
         current->next = prev;
